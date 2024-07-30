@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'realtime_pr.wsgi.application'
+# WSGI_APPLICATION = 'realtime_pr.wsgi.application'
+ASGI_APPLICATION = 'realtime_pr.asgi.application'
 
 
 # Database

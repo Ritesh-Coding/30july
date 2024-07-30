@@ -1,10 +1,32 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Time Chat Application</title>
+    <title>WebSocket Test</title>
 </head>
 <body>
-    <h1>Hello World</h1>
+    <h1 id="app">Hello World</h1>
 </body>
+<script>
+    var socket = new WebSocket('ws://localhost:8000/ws/some_url/');
+
+    socket.onopen = function() {
+        console.log("WebSocket connection established");
+    };
+
+    socket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        console.log(data);
+        document.querySelector('#app').innerText = data.message;
+    };
+
+    socket.onclose = function(event) {
+        console.log("WebSocket connection closed", event);
+    };
+
+    socket.onerror = function(error) {
+        console.log("WebSocket error", error);
+    };
+</script>
 </html>

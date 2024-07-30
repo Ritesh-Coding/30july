@@ -1,0 +1,79 @@
+//react
+npm install websocket
+
+
+//websockert connection
+import React, { useEffect, useState } from 'react';
+
+const Chat = ({ username, roomName }) => {
+  const [socket, setSocket] = useState(null);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const socket = new WebSocket(`ws://localhost:8000/ws/chat/${roomName}/`);
+    setSocket(socket);
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setMessages((prevMessages) => [...prevMessages, data]);
+    };
+
+    return () => socket.close();
+  }, [roomName]);
+
+  const sendMessage = () => {
+    if (socket) {
+      socket.send(JSON.stringify({
+        message,
+        sender: username,
+        recipient: 'hr', // Hardcoded for example purposes, adjust as necessary
+      }));
+      setMessage('');
+    }
+  };
+
+  return (
+    <div>
+      <h1>Chat Room: {roomName}</h1>
+      <div>
+        {messages.map((msg, index) => (
+          <p key={index}><strong>{msg.sender}</strong>: {msg.message}</p>
+        ))}
+      </div>
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <button onClick={sendMessage}>Send</button>
+    </div>
+  );
+};
+
+export default Chat;
+
+
+daphne -p 8000 realtime_project.asgi:application
+
+
+npm start
+
+
+//use like that 
+import React from 'react';
+import Chat from './Chat'; // Adjust the path if necessary
+
+const ChatPage = () => {
+  const username = 'user1'; // Replace with actual user data
+  const roomName = 'general'; // Replace with actual room data
+
+  return (
+    <div>
+      <h1>Welcome to the Chat</h1>
+      <Chat username={username} roomName={roomName} />
+    </div>
+  );
+};
+
+export default ChatPage;
